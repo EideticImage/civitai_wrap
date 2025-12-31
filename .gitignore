@@ -1,0 +1,8 @@
+.env
+env/
+output/
+__pycache__
+
+# Draft files
+main.py
+test.py
