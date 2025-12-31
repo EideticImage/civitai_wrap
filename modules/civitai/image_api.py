@@ -5,28 +5,33 @@ import requests
 from modules.data import Image
 from modules.utils import get_headers
 
+
 class ImagePeriodEnum(Enum):
     AllTime = 1
-    Year    = 2
-    Month   = 3
-    Week    = 4
-    Day     = 5
+    Year = 2
+    Month = 3
+    Week = 4
+    Day = 5
+
 
 class ImageSortEnum(Enum):
-    MostReactions   = 1
-    MostComments    = 2
-    Newest          = 3
+    MostReactions = 1
+    MostComments = 2
+    Newest = 3
+
+# TODO: Add a retry mechanism 
 
 class ImageApi:
     @staticmethod
     def fetch_images(
-        count: int = -1,
         postId: int = None,
         modelId: int = None,
         modelVersionId: int = None,
         username: str = None,
         sort: ImageSortEnum = None,
         period: ImagePeriodEnum = None,
+        limit: int = None,
+        cursor=None,
     ) -> list[Image]:
         url = f"https://civitai.com/api/v1/images?"
 
@@ -43,23 +48,21 @@ class ImageApi:
             params["sort"] = sort.name
         if period is not None:
             params["period"] = period.name
+        if limit is not None:
+            params["limit"] = limit
+        if cursor is not None:
+            params["cursor"] = cursor
 
-        images = []
-        while len(images) < count or count == -1:
-            params["limit"] = 200 if count == -1 else min(count-len(images), 200)
-
-            resp = requests.get(url, headers=get_headers(), params=params)
+        try:
+            resp = requests.get(url, headers=get_headers(), params=params, timeout=2)
             resp.raise_for_status()
             data = resp.json()
 
             items = data.get("items", [])
-            if not len(items): break
+            if not len(items):
+                return
 
             results = [Image.from_dict(img) for img in items]
-            images.extend(results)
-            params['cursor'] = data.get("metadata", {}).get("nextCursor", None)
-
-            if params['cursor'] is None:
-                break
-
-        return images
+            return results, data.get("metadata", {})
+        except:
+            return [], {}
