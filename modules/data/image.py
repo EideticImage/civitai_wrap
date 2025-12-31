@@ -13,14 +13,31 @@ class Image:
     meta: dict
     base_model: str
 
+    def get_ressources(self):
+        metadata = self.meta
+        if metadata is None:
+            return []
+        return metadata.get('resources', [])
+
+    def get_prompt(self):
+        metadata = self.meta
+        if metadata is None:
+            return ''
+        return metadata.get('prompt', '')
+
     @staticmethod
     def from_dict(data: dict) -> "Image":
+        meta = (
+            data.get("meta", {}).get("meta", {})
+            if data.get("meta", {}).get("meta", {})
+            else data.get("meta", {})
+        )
         return Image(
             id=data.get("id"),
             url=data.get("url"),
             width=data.get("width"),
             height=data.get("height"),
-            meta=data.get("meta", {}).get("meta", {}),
+            meta=meta,
             base_model=data.get("baseModel", ""),
         )
 
@@ -28,7 +45,6 @@ class Image:
     def fetch_from_api(image_id: int) -> "Image":
         import requests
 
-        url = f"https://civitai.com/api/v1/images?imageId={image_id}"
         resp = requests.get(url, get_headers())
         resp.raise_for_status()
 
