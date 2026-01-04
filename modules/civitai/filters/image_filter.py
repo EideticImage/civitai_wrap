@@ -28,3 +28,12 @@ class ImageCivitaiRessourcesFilter(Filter):
 
     def __call__(self, image: Image):
         return any(r['modelVersionId'] == self.modelVersionId for r in image.get_civitai_ressources())
+    
+class ImageAspectRatioFilter(Filter):
+    def __init__(self, aspectRatio, acceptedVariation=0):
+        self.aspectRatio = aspectRatio
+        self.acceptedVariation = acceptedVariation
+    
+    def __call__(self, item: Image):
+        imageRatio = item.width / item.height
+        return (self.aspectRatio - self.acceptedVariation) <= imageRatio <= (self.aspectRatio + self.acceptedVariation)
