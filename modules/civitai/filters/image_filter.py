@@ -1,34 +1,30 @@
 from modules.data import Image
-from abc import ABC, abstractmethod
+from .filter import Filter
 
-class ImageFilter(ABC):
-    @abstractmethod
-    def __call__(self, image: Image):
-        pass
-
-class ImageLoraFilter(ImageFilter):
+class ImageLoraNameFilter(Filter):
     def __init__(self, lora_name):
         self.lora_name = lora_name
 
     def __call__(self, image: Image):
-        metadata = image.meta
-        if metadata is None:
-            return False
-        ressources = metadata.get('resources', [])
-        for ressource in ressources:
-            if ressource['name'] == self.lora_name:
-                return True
-        return False
+        return any(r['name'] == self.lora_name for r in image.get_ressources())
 
-class ImagePromptFilter(ImageFilter):
+class ImageLoraExactCountFilter(Filter):
+    def __init__(self, count):
+        self.count = count
+
+    def __call__(self, image: Image):
+        return len(image.get_ressources()) == self.count
+
+class ImagePromptFilter(Filter):
     def __init__(self, text):
         self.text = text.lower()
     
     def __call__(self, image: Image):
-        metadata = image.meta
-        if metadata is None:
-            return False
-        prompt = metadata.get('resources', '')
-
-        return self.text in prompt.lower()
+        return self.text in image.get_prompt().lower()
     
+class ImageCivitaiRessourcesFilter(Filter):
+    def __init__(self, modelVersionId):
+        self.modelVersionId = modelVersionId
+
+    def __call__(self, image: Image):
+        return any(r['modelVersionId'] == self.modelVersionId for r in image.get_civitai_ressources())
