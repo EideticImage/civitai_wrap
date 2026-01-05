@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import time
 
+from modules import Logger
+
 class Cursor:
     def __init__(self):
         self._was_updated = False
@@ -38,14 +40,17 @@ class Pipe:
         self.retry_config = RetryConfig()
 
     def fetch(self, count):
+        logger = Logger(count).reprint()
+
         while len(self.values) < count and not self.cursor.reached_end():
             limit = min(200, count - len(self.values))
-            print(f'Sent request - cursor: {self.cursor.get()}')
             try:
                 new_values, metadata = self.safe_api_func(limit)
             except:
                 return self.values
-            self.values.extend([value for value in new_values if self.filter is None or self.filter(value)])
+            filtered_values = [value for value in new_values if self.filter is None or self.filter(value)]
+            self.values.extend(filtered_values)
+            logger.on_request_results(len(filtered_values)).reprint()
             
             self.cursor.update(metadata.get("nextCursor", None))
         return self.values
@@ -57,7 +62,6 @@ class Pipe:
             try:
                 return self.api_func(**self.kwargs, limit=limit, cursor=self.cursor.get())
             except Exception as e:
-                print(f'Error {e} at attempt {attempt+1}')
                 if attempt == max_attempts - 1:
                     raise MaxRetryExceeded() from e
                 time.sleep(delay)
