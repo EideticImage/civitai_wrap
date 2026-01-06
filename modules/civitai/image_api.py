@@ -19,7 +19,6 @@ class ImageSortEnum(Enum):
     MostComments = 2
     Newest = 3
 
-# TODO: Add a retry mechanism 
 
 class ImageApi:
     @staticmethod
@@ -53,16 +52,13 @@ class ImageApi:
         if cursor is not None:
             params["cursor"] = cursor
 
-        try:
-            resp = requests.get(url, headers=get_headers(), params=params, timeout=2)
-            resp.raise_for_status()
-            data = resp.json()
+        resp = requests.get(url, headers=get_headers(), params=params, timeout=2)
+        resp.raise_for_status()
+        data = resp.json()
 
-            items = data.get("items", [])
-            if not len(items):
-                return
-
-            results = [Image.from_dict(img) for img in items]
-            return results, data.get("metadata", {})
-        except:
+        items = data.get("items", [])
+        if not len(items):
             return [], {}
+
+        results = [Image.from_dict(img) for img in items]
+        return results, data.get("metadata", {})

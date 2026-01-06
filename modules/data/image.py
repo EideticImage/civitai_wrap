@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from ..utils.headers import get_headers
+from modules.utils import get_headers, download_image
 
 # TODO: Add the remaining fields
 
@@ -18,6 +18,12 @@ class Image:
         if metadata is None:
             return []
         return metadata.get('resources', [])
+    
+    def get_civitai_ressources(self):
+        metadata = self.meta
+        if metadata is None:
+            return []
+        return metadata.get('civitaiResources', [])
 
     def get_prompt(self):
         metadata = self.meta
@@ -45,6 +51,7 @@ class Image:
     def fetch_from_api(image_id: int) -> "Image":
         import requests
 
+        url = f"https://civitai.com/api/v1/images?imageId={image_id}"
         resp = requests.get(url, get_headers())
         resp.raise_for_status()
 
@@ -54,16 +61,4 @@ class Image:
 
     def download(self, folder: str = "default") -> None:
         import os
-        import requests
-
-        folder = f"output/{folder}"
-        filename = f"{folder}/{self.id}.jpg"
-
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-
-        resp = requests.get(self.url)
-        resp.raise_for_status()
-
-        with open(filename, "wb") as f:
-            f.write(resp.content)
+        download_image(self.url, os.path.join('output', folder), self.id)
