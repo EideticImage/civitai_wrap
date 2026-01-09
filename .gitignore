@@ -1,6 +1,7 @@
 .env
 env/
 output/
+models/
 __pycache__
 
 # Draft files

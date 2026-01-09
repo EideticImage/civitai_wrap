@@ -40,14 +40,18 @@ class ModelApi:
         name = name or model.name
         folder = folder or os.path.join('models')
 
-        import os
         if not os.path.exists(folder):
             os.makedirs(folder) 
 
-        save_json(asdict(model), folder, name)
+        model_folder_name = ''.join([char for char in model.name if char.isalnum()])
+        model_folder = os.path.join(folder, model_folder_name)
+        if not os.path.exists(model_folder):
+            os.makedirs(model_folder)
+
+        save_json(asdict(model), model_folder, name)
         
         version1 = model.get_latest_version()
         miniature = version1.images[0]
 
-        download_image(miniature['url'], folder, filename='miniature')
-        ModelApi.download_weights(version1.id, folder)
+        download_image(miniature['url'], model_folder, filename='miniature')
+        ModelApi.download_weights(version1.id, model_folder)
