@@ -1,3 +1,3 @@
 from .utils import *
 from .data import *
-from .civitai import *
+from .api import *

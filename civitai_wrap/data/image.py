@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from modules.utils import get_headers, download_image
+from civitai_wrap.utils import get_headers, download_image
 
 # TODO: Add the remaining fields
 

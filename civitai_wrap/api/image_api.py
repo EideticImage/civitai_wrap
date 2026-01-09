@@ -2,8 +2,8 @@ from enum import Enum
 
 import requests
 
-from modules.data import Image
-from modules.utils import get_headers
+from civitai_wrap.data import Image
+from civitai_wrap.utils import get_headers
 
 
 class ImagePeriodEnum(Enum):

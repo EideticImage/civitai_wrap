@@ -1,4 +1,4 @@
-from modules.data import Image
+from civitai_wrap.data import Image
 from .filter import Filter
 
 class ImageLoraNameFilter(Filter):

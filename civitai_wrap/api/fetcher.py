@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import time
 
-from modules import Logger
+from civitai_wrap import Logger
 from .container import Container
 from .cursor import Cursor
 import threading

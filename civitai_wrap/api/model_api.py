@@ -3,8 +3,8 @@ import os
 import requests
 from dataclasses import asdict
 
-from modules.utils import API_KEY, get_headers, save_json, download_image
-from modules.data import Model
+from civitai_wrap.utils import API_KEY, get_headers, save_json, download_image
+from civitai_wrap.data import Model
 
 class ModelApi:
     @staticmethod

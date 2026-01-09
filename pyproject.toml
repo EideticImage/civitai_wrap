@@ -1,0 +1,7 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "civitai_wrap"
+version = "0.1.0"
