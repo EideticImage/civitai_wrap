@@ -30,6 +30,7 @@ class ModelApi:
             print(e)
             return None
 
+    @staticmethod
     def download(modelId: int, folder='', name=''):
         model = ModelApi.fetch_by_id(modelId)
         if model is None:
