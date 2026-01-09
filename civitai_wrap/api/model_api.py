@@ -8,7 +8,7 @@ class ModelApi:
     @staticmethod
     def download_weights(modelVersionId: int, folder) -> None:
         url = f"https://civitai.com/api/download/models/{modelVersionId}?token={Config.get_api_key()}"
-        filename = os.path.join(folder, f'{modelVersionId}.safetensors')
+        filename = os.path.join(folder, 'model.safetensors')
         command = ["wget", url] if os.name == 'posix' else ['curl', '-L', '-o', filename,  url, ' --content-disposition']
         subprocess.call(command)
 
@@ -41,8 +41,7 @@ class ModelApi:
         if not os.path.exists(folder):
             os.makedirs(folder) 
 
-        model_folder_name = ''.join([char for char in model.name if char.isalnum()])
-        model_folder = os.path.join(folder, model_folder_name)
+        model_folder = os.path.join(folder, str(modelId))
         if not os.path.exists(model_folder):
             os.makedirs(model_folder)
 
