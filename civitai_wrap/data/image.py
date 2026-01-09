@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from civitai_wrap.utils import get_headers, download_image
-
+from civitai_wrap import Config, download_image
 # TODO: Add the remaining fields
 
 
@@ -52,7 +51,7 @@ class Image:
         import requests
 
         url = f"https://civitai.com/api/v1/images?imageId={image_id}"
-        resp = requests.get(url, get_headers())
+        resp = requests.get(url, Config.get_headers())
         resp.raise_for_status()
 
         for img in resp.json().get("items", []):

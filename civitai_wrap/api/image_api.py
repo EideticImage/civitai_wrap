@@ -3,7 +3,7 @@ from enum import Enum
 import requests
 
 from civitai_wrap.data import Image
-from civitai_wrap.utils import get_headers
+from civitai_wrap import Config
 
 
 class ImagePeriodEnum(Enum):
@@ -52,7 +52,7 @@ class ImageApi:
         if cursor is not None:
             params["cursor"] = cursor
 
-        resp = requests.get(url, headers=get_headers(), params=params, timeout=2)
+        resp = requests.get(url, headers=Config.get_headers(), params=params, timeout=2)
         resp.raise_for_status()
         data = resp.json()
 

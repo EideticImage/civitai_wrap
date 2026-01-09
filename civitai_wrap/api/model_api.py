@@ -3,13 +3,11 @@ import os
 import requests
 from dataclasses import asdict
 
-from civitai_wrap.utils import API_KEY, get_headers, save_json, download_image
-from civitai_wrap.data import Model
-
+from civitai_wrap import save_json, download_image, Config, Model
 class ModelApi:
     @staticmethod
     def download_weights(modelVersionId: int, folder) -> None:
-        url = f"https://civitai.com/api/download/models/{modelVersionId}?token={API_KEY}"
+        url = f"https://civitai.com/api/download/models/{modelVersionId}?token={Config.get_api_key()}"
         filename = os.path.join(folder, f'{modelVersionId}.safetensors')
         command = ["wget", url] if os.name == 'posix' else ['curl', '-L', '-o', filename,  url, ' --content-disposition']
         subprocess.call(command)
@@ -21,7 +19,7 @@ class ModelApi:
         params = {}
 
         try:
-            resp = requests.get(url, headers=get_headers(), params=params, timeout=2)
+            resp = requests.get(url, headers=Config.get_headers(), params=params, timeout=2)
             resp.raise_for_status()
             data = resp.json()
 
