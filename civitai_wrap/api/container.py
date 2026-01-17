@@ -8,10 +8,8 @@ class ContainerIterator:
         self.index = 0
 
     def __next__(self):
-        if self.index >= len(self.container) and self.container.is_full():
-            raise StopIteration
-
         while self.index >= len(self.container):
+            if self.container.is_full(): raise StopIteration
             time.sleep(0.5)
 
         self.index += 1

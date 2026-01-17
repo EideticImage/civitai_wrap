@@ -60,5 +60,5 @@ class ImageApi:
         if not len(items):
             return [], {}
 
-        results = [Image.from_dict(img) for img in items]
+        results = [Image.from_dict(img) for img in items if img is not None]
         return results, data.get("metadata", {})

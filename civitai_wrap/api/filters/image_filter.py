@@ -37,3 +37,16 @@ class ImageAspectRatioFilter(Filter):
     def __call__(self, item: Image):
         imageRatio = item.width / item.height
         return (self.aspectRatio - self.acceptedVariation) <= imageRatio <= (self.aspectRatio + self.acceptedVariation)
+    
+class ImageFileTypeFilter(Filter):
+    def __init__(self, file_type, negative=False):
+        self.file_type = file_type
+        self.negative = negative
+    
+    def __call__(self, item: Image):
+        file_type = item.url.split('.')[-1]
+
+        if self.negative:
+            return file_type != self.file_type
+        return file_type == self.file_type
+        

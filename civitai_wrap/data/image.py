@@ -34,7 +34,7 @@ class Image:
     def from_dict(data: dict) -> "Image":
         meta = (
             data.get("meta", {}).get("meta", {})
-            if data.get("meta", {}).get("meta", {})
+            if data.get("meta", {}) is not None
             else data.get("meta", {})
         )
         return Image(
